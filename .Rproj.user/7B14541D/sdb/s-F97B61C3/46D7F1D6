@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n#读取数据\nKobe <- read.csv(\"data/Kobe Bryant.csv\")\nLeBron <- read.csv(\"data/LeBron James.csv\")\n\n#数据预处理\nmyvars <- c(\"G\", \"MP\", \"FG\", \"FGA\", \"X3P\", \"X3PA\", \"FT\", \"FTA\", \"ORB\", \"DRB\", \"AST\", \"STL\", \"BLK\", \"TOV\", \"PF\", \"PTS\")\n\nKobe <- Kobe[myvars]\nLeBron <- LeBron[myvars]\n",
+    "created" : 1476249610419.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1530118945",
+    "id" : "46D7F1D6",
+    "lastKnownWriteTime" : 1476249544,
+    "last_content_update" : 1476249787121,
+    "path" : "E:/visualization/workspace/uncertainty/main.R",
+    "project_path" : "main.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
