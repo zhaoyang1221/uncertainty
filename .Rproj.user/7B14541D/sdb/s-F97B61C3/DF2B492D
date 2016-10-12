@@ -1,0 +1,28 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1476272102407.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "DF2B492D",
+    "lastKnownWriteTime" : 7308604914264011873,
+    "last_content_update" : 1476272102407,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "5rj96nflyp",
+        "caption" : "covOfKobe",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=covOfKobe&cache_key=5rj96nflyp",
+        "displayedObservations" : 16,
+        "environment" : "",
+        "object" : "covOfKobe",
+        "totalObservations" : 16,
+        "variables" : 16
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
