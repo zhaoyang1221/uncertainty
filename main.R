@@ -3,6 +3,21 @@ Kobe <- read.csv("data/Kobe Bryant.csv")
 LeBron <- read.csv("data/LeBron James.csv")
 Curry <- read.csv("data/Stephen Curry.csv")
 
+filenames <- list.files("datasets", pattern = ".csv")
+
+#得到球员数据集
+datalist <- lapply(filenames, function(name){
+  read.csv(paste("datasets/", name, sep = ""))
+})
+
+#球员姓名列表
+playernames <- lapply(filenames, function(name){
+  strsplit(name, "\\.")[[1]][1]
+})
+#为球员数据集命名
+names(datalist) = playernames
+
+
 #数据预处理,保留需要的维度
 myvars <- c("G", "MP", "FG", "FGA", "X3P", "X3PA", "FT", "FTA", "ORB", "DRB", "AST", "STL", "BLK", "TOV", "PF", "PTS")
 Kobe <- Kobe[myvars]
@@ -40,3 +55,4 @@ uncertaintyFunc2 <- function(x){
 
 uncertaintyOfKobe2 <- uncertaintyFunc2(evOfKobe)
 uncertaintyOfLeBron2 <- uncertaintyFunc2(evOfLeBron)
+
