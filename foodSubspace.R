@@ -31,7 +31,6 @@ uncertaintyList <- lapply(foodClusters, function(cluster){
   } else {
     OneDimensionUncertaintyFun(subOfFood)
   }
-  
 })
 
 #只有一个维度的子空间，利用标准差作为不确定性
@@ -47,4 +46,8 @@ multiDimensionUncertaintyFun <- function(x) {
   result <- pi^d / gamma(d+1) * prod(sqrt(eigenValues), na.rm = TRUE)
   return(result)
 }
+
+uncertaintyFrame <- data.frame(index = c(1:length(uncertaintyList)), uncertainty = as.double(uncertaintyList))
+ggplot(uncertaintyFrame) + geom_col()
+
 

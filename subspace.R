@@ -1,6 +1,5 @@
 cars <- read.csv("cars.csv")
-row.names(cars) <- cars[,1]
-cars <- cars[,-1]
+
 
 
 library(subspace)
