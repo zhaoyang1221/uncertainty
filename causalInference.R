@@ -59,19 +59,40 @@ ggplot(cars.noNA, aes(x = weight, y = economy)) + geom_point() + geom_smooth()
 ggplot(cars.noNA, aes(x = year, y = economy)) + geom_point() + geom_smooth()
 
 
+#按行进行分组，分别对每组数据计算均值来构建新的数据集（chunk是分组行数）
+constructNewCarsFunc <- function(data, chunk){
+  #对数据集按行数进行分组
+  n <- nrow(data)
+  r <- rep(1:ceiling(n/chunk),each=chunk)[1:n]
+  d <- split(data, r)
   
-  
+  #对每一个分组进行计算(这里是均值)
+  meanOfDatalist <- lapply(d, function(data){
+    apply(data, 2, mean)
+  })
+  result <- as.data.frame(do.call(rbind, meanOfDatalist))
+  return(result)
+}
 
-#学习pcalg包
-library("pcalg")
-data("gmG")
+#计算每一维度上的不确定性
+uncertaintyFunc1 <- function(data){
+  apply(data, 2, sd)
+}
 
-suffStat <- list(C = cor(gmG8$x), n = nrow(gmG8$x))
-pc.gmG <- pc(suffStat, indepTest = gaussCItest, p = ncol(gmG8$x), alpha = 0.01)
-stopifnot(require(Rgraphviz))# needed for all our graph plots
-par(mfrow = c(1,2))
-plot(gmG8$g, main = "") ; plot(pc.gmG, main = "")
+cars.uncertainty <- NULL
+for (i in 1:10) {
+  temp <- constructNewCarsFunc(cars.noNA, i)
+  cars.uncertainty[[i]] <- uncertaintyFunc1(temp)
+}
 
-#causal effect
-ida(1, 6, cov(gmG8$x), pc.gmG@graph)
-idaFast(1, c(4,5,6), cov(gmG8$x), pc.gmG@graph)
+#将不确定性的list转成dataframe，便于作图
+cars.uncertainty.dataframe <- as.data.frame(do.call(rbind, cars.uncertainty))
+
+#根据具有因果关系的维度画散点图
+require("ggplot2")
+ggplot(cars.uncertainty.dataframe, aes(x = cylinders, y = displacement))+ geom_point() + geom_smooth()
+ggplot(cars.uncertainty.dataframe, aes(x = displacement, y = power)) + geom_point() + geom_smooth()
+ggplot(cars.uncertainty.dataframe, aes(x = power, y = timeTo60mph)) + geom_point() + geom_smooth()
+ggplot(cars.uncertainty.dataframe, aes(x = displacement, y = weight)) + geom_point() + geom_smooth()
+ggplot(cars.uncertainty.dataframe, aes(x = weight, y = economy)) + geom_point() + geom_smooth()
+ggplot(cars.uncertainty.dataframe, aes(x = year, y = economy)) + geom_point() + geom_smooth()
