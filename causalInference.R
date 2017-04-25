@@ -2,16 +2,17 @@
 cars <- read.csv("cars.csv")
 cars <- cars[,-1]
 cars.noNA <-na.omit(cars)
+cars.scale <- scale(cars.noNA)
 
 #使用pcalg包
 library("pcalg")
 stopifnot(require(Rgraphviz))# needed for all our graph plots
-suffStatOfCars <- list(C = cor(cars.noNA), n = nrow(cars.noNA))
-pc.cars <- pc(suffStatOfCars, indepTest = gaussCItest, p = ncol(cars.noNA),alpha = 0.01)
-pc.cars <- pc(suffStatOfCars, indepTest = gaussCItest, labels = colnames(cars.noNA), alpha = 0.01)
+suffStatOfCars <- list(C = cor(cars.scale), n = nrow(cars.scale))
+pc.cars <- pc(suffStatOfCars, indepTest = gaussCItest, p = ncol(cars.scale),alpha = 0.01)
+pc.cars <- pc(suffStatOfCars, indepTest = gaussCItest, labels = colnames(cars.scale), alpha = 0.01)
 plot(pc.cars, main = "")
-ida(2,3, cov(cars.noNA), pc.cars@graph, method = "global")
-ida(6,4, cov(cars.noNA), pc.cars@graph)
+ida(2,3, cov(cars.scale), pc.cars@graph, method = "global")
+ida(6,4, cov(cars.scale), pc.cars@graph)
 
 pc.cars.allDags <- pdag2allDags(as(pc.cars, "amat"))
 plotAllDags(pc.cars.allDags)
@@ -45,9 +46,9 @@ trueDAGFunc <- function(res, index) {
 
 #计算影响因子
 causalEffect(trueDAG, 4,2)
-ida(2,3, cov(cars.noNA), trueDAG)
-ida(2,5, cov(cars.noNA), trueDAG)
-idaFast(2, c(3,4,5),cov(cars.noNA),trueDAG)
+ida(2,3, cov(cars.scale), trueDAG)
+ida(2,5, cov(cars.scale), trueDAG)
+idaFast(2, c(3,4,5),cov(cars.scale),trueDAG)
 
 #维度之间的散点图，查看相关关系
 require("ggplot2")
