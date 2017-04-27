@@ -13,10 +13,18 @@ windows()
 plot(sil)
 
 
-#计算每一维度上的不确定性
+#计算每一维度上的不确定性(以标准差来衡量)
 uncertaintyFunc1 <- function(data){
   apply(data, 2, sd)
 }
+
+
+library(entropy)
+uncertaintyFunc2 <- function(data){
+  apply(data, 2, function(x) entropy.ChaoShen(x, unit = "log2"))
+}
+
+
 
 #通过聚类结果构建不确定性数据集
 temp <- NULL
@@ -42,9 +50,6 @@ temp[[18]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] > 0.67 & sil[,3
 temp[[19]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] > 0.6 & sil[,3] <= 0.67))
 temp[[20]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] > 0.4 & sil[,3] <= 0.6))
 temp[[21]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] <= 0.4))
-
-
-sample(subset.matrix(sil, sil[,1] == 1 & sil[,3] <= 0.2))
 
 uncertaintylist <- lapply(temp, function(tp){
   cars.temp <- cars.noNA[tp,]
