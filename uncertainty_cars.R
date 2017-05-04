@@ -18,10 +18,13 @@ uncertaintyFunc1 <- function(data){
   apply(data, 2, sd)
 }
 
-
+#第二种不确定性计算方式（以信息熵来衡量）
 library(entropy)
 uncertaintyFunc2 <- function(data){
-  apply(data, 2, function(x) entropy.ChaoShen(x, unit = "log2"))
+  apply(data, 2, function(x){
+    tmp <- table(x)
+    entropy.empirical(tmp, unit = "log2")
+  })
 }
 
 
@@ -53,7 +56,7 @@ temp[[21]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] <= 0.4))
 
 uncertaintylist <- lapply(temp, function(tp){
   cars.temp <- cars.noNA[tp,]
-  uncertaintyFunc1(cars.temp)
+  uncertaintyFunc2(cars.temp)
 })
 
 #将不确定性的list转成dataframe，便于作图
@@ -105,7 +108,7 @@ tempScale[[21]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 2 & sil.sc
 tempScale[[22]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 2 & sil.scale[,3] <= 0.1))
 
 scale.uncertaintylist <- lapply(tempScale, function(tp){
-  cars.temp <- cars.scale[tp,]
+  cars.temp <- cars.noNA[tp,]
   uncertaintyFunc1(cars.temp)
 })
 
@@ -116,7 +119,7 @@ library("pcalg")
 stopifnot(require(Rgraphviz))# needed for all our graph plots
 suffStatOfCars <- list(C = cor(cars.scale.uncertainty.dataframe), n = nrow(cars.scale.uncertainty.dataframe))
 pc.scale.uncertainty <- pc(suffStatOfCars, indepTest = gaussCItest, p = ncol(cars.scale.uncertainty.dataframe),alpha = 0.01)
-pc.scale.uncertainty <- pc(suffStatOfCars, indepTest = gaussCItest, labels = colnames(cars.scale.uncertainty.dataframe), alpha = 0.2)
+pc.scale.uncertainty <- pc(suffStatOfCars, indepTest = gaussCItest, labels = colnames(cars.scale.uncertainty.dataframe), alpha = 0.05)
 plot(pc.scale.uncertainty, main = "")
 
 pc.uncertainty.allDags <- pdag2allDags(as(pc.scale.uncertainty, "amat"))
