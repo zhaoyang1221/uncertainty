@@ -38,3 +38,4 @@ temp[[18]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] > 0.67 & sil[,3
 temp[[19]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] > 0.6 & sil[,3] <= 0.67))
 temp[[20]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] > 0.4 & sil[,3] <= 0.6))
 temp[[21]] <- rownames(subset.matrix(sil, sil[,1] == 2 & sil[,3] <= 0.4))
+
