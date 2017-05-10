@@ -76,7 +76,7 @@ scale.uncertaintylist <- lapply(tempScale, function(tp){
 cars.scale.uncertainty.dataframe <- as.data.frame(do.call(rbind, scale.uncertaintylist))
 
 #按行求和，得到信息熵之和（总体不确定性）
-
+overallUncertainty
 
 
 
@@ -96,9 +96,11 @@ flattenCorrMatrix <- function(cormat, pmat) {
 corrMatrix <- flattenCorrMatrix(corelationResult$r,corelationResult$P)
 plot(corrMatrix$cor, corrMatrix$p)
 
+
 library(corrplot)
 corrplot(corelationResult$r, method = "circle", type = "upper", order = "original",
          p.mat = corelationResult$P, sig.level = 0.05, insig = "blank")
+
 
 #因果分析
 library("pcalg")
