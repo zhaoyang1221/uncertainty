@@ -5,12 +5,25 @@ cars.noNA <-na.omit(cars)
 library(fpc)
 library(cluster)
 library(ggfortify)
-
+library(ggplot2)
 #数据归一化
 cars.scale <- scale(cars.noNA, center = TRUE, scale = TRUE)
 cars.scale.diss <- daisy(cars.scale)
+
+#依据轮廓系数来选取最佳的聚类个数
+K <-2:8
+rst <- sapply(K, function(i){
+  print(paste("K=", i))
+  clusters <- pam(cars.scale, i)
+  result <- silhouette(clusters)
+  sumryOfresult <- summary(result)
+  sumryOfresult$avg.width
+})
+ggplot(NULL, aes(x= K, y = rst)) + geom_point() + geom_line() + ylab("轮廓系数")
+
+#聚类
 cars.scale.pamk <- pamk(cars.scale)
-cars.scale.pam <- pam(cars.scale.diss, cars.scale.pamk$nc, diss = TRUE)
+cars.scale.pam <- pam(cars.scale, cars.scale.pamk$nc)
 autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm")
 clusplot(cars.scale.pam)
 sil.scale <- silhouette(cars.scale.pamk$pamobject)
@@ -68,18 +81,18 @@ tempScale <- append(tempScale1, tempScale2)
 
 #计算不确定性
 scale.uncertaintylist <- lapply(tempScale, function(tp){
-  cars.temp <- cars.scale[tp,]
-  uncertaintyFunc1(cars.temp)
+  cars.temp <- cars[tp,]
+  uncertaintyFunc2(cars.temp)
 })
 
 #将不确定性的list转成dataframe，便于作图
 cars.scale.uncertainty.dataframe <- as.data.frame(do.call(rbind, scale.uncertaintylist))
 
-#按行求和，得到信息熵之和（总体不确定性）
-overallUncertainty
-
-
-
+#正态检验
+shapiro.test(cars.scale.uncertainty.dataframe$cylinders)
+qqnorm(cars.scale.uncertainty.dataframe$cylinders)
+qqline(cars.scale.uncertainty.dataframe$cylinders)
+hist(cars.scale.uncertainty.dataframe$cylinders)
 #相关分析
 library("Hmisc")
 corelationResult <- rcorr(as.matrix(cars.scale.uncertainty.dataframe))
@@ -89,19 +102,23 @@ flattenCorrMatrix <- function(cormat, pmat) {
   data.frame(
     row = rownames(cormat)[row(cormat)[ut]],
     column = rownames(cormat)[col(cormat)[ut]],
-    cor  =(cormat)[ut],
+    r  =(cormat)[ut],
     p = pmat[ut]
   )
 }
 corrMatrix <- flattenCorrMatrix(corelationResult$r,corelationResult$P)
-plot(corrMatrix$cor, corrMatrix$p)
+ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 
-
+plot()
 library(corrplot)
 corrplot(corelationResult$r, method = "circle", type = "upper", order = "original",
          p.mat = corelationResult$P, sig.level = 0.05, insig = "blank")
 
-
+#原数据的相关分析
+corrResultOfOriginalDATA <- rcorr(as.matrix(cars.noNA))
+corrMatrixOfOriginalDATA <- flattenCorrMatrix(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
+corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "original",
+         p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
 #因果分析
 library("pcalg")
 stopifnot(require(Rgraphviz))# needed for all our graph plots
