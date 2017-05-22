@@ -21,6 +21,11 @@ plot(SynData.pamk$pamobject)
 SynData.sil <- silhouette(SynData.pamk$pamobject)
 plot(SynData.sil)
 
+#计算每一维度上的不确定性(以标准差来衡量)
+uncertaintyFunc1 <- function(data){
+  apply(data, 2, sd)
+}
+
 #第二种不确定性计算方式（以信息熵来衡量）
 library(entropy)
 uncertaintyFunc2 <- function(data){
@@ -38,8 +43,14 @@ SynData.tempScale <- split(SynData.matrixOfSil, 1:nrow(SynData.matrixOfSil))
 #计算
 SynData.uncertaintylist <- lapply(SynData.tempScale, function(tp){
   SynData.temp <- SynData[tp,]
-  uncertaintyFunc2(SynData.temp)
+  uncertaintyFunc1(SynData.temp)
 })
 
 #将不确定性的list转成dataframe，便于作图
 SynData.uncertainty.dataframe <- as.data.frame(do.call(rbind, SynData.uncertaintylist))
+
+#正态检验
+shapiro.test(SynData.uncertainty.dataframe$y2)
+qqnorm(SynData.uncertainty.dataframe$y2)
+qqline(SynData.uncertainty.dataframe$y2)
+hist(SynData.uncertainty.dataframe$y1)
