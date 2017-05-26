@@ -1,0 +1,8 @@
+group-1,W,P-value
+economy,0.92911,0.1176
+cylinders,0.715,3.06E-05
+displacement,0.93716,0.1729
+power,0.9529,0.3601
+weight,0.69925,1.92E-05
+timeTo60mph,0.94604,0.2634
+year,0.95505,0.3961

@@ -19,7 +19,7 @@ rst <- sapply(K, function(i){
   sumryOfresult <- summary(result)
   sumryOfresult$avg.width
 })
-ggplot(NULL, aes(x= K, y = rst)) + geom_point() + geom_line() + ylab("轮廓系数")
+ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "cyan", colour = "black") + geom_line() + ylab("Silhouette")
 
 #聚类
 cars.scale.pamk <- pamk(cars.scale)
@@ -43,7 +43,7 @@ uncertaintyFunc2 <- function(data){
   })
 }
 
-
+#按值抽样 结果最差
 tempScale <- NULL
 tempScale[[1]] <- rownames(sil.scale)
 tempScale[[2]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 1))
@@ -70,6 +70,7 @@ tempScale[[21]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 2 & sil.sc
 tempScale[[22]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 2 & sil.scale[,3] <= 0.1))
 
 #更改抽样方法,每14行一组
+tempScale <- NULL
 tempScale1 <- NULL
 tempScale1[[1]] <- rownames(sil.scale)
 tempScale1[[2]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 1))
@@ -78,6 +79,13 @@ rownamesOfSil <- rownames(sil.scale)
 matrixOfSil <- matrix(rownamesOfSil, ncol = 14, byrow = TRUE)
 tempScale2 <- split(matrixOfSil, 1:nrow(matrixOfSil))
 tempScale <- append(tempScale1, tempScale2)
+
+#直接对数据中的某一列进行排序然后分组
+cars.order <- cars.noNA[order(cars.noNA[,4], decreasing = TRUE),]
+tempScale3<- NULL
+rownamesOfOrdered <- rownames(cars.order)
+matrixOfOrdered <- matrix(rownamesOfOrdered, ncol = 14, byrow = TRUE)
+tempScale3 <- split(matrixOfOrdered, 1:nrow(matrixOfOrdered))
 
 #计算不确定性
 scale.uncertaintylist <- lapply(tempScale, function(tp){
@@ -95,7 +103,8 @@ SWTest$statistic
 SWTest$p.value
 qqnorm(cars.scale.uncertainty.dataframe$economy)
 qqline(cars.scale.uncertainty.dataframe$cylinders)
-hist(cars.scale.uncertainty.dataframe$cylinders)
+hist(cars.scale.uncertainty.dataframe$displacement)
+
 #相关分析
 library("Hmisc")
 corelationResult <- rcorr(as.matrix(cars.scale.uncertainty.dataframe))
