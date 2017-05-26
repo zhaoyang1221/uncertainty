@@ -81,7 +81,7 @@ tempScale <- append(tempScale1, tempScale2)
 
 #计算不确定性
 scale.uncertaintylist <- lapply(tempScale, function(tp){
-  cars.temp <- cars[tp,]
+  cars.temp <- cars.noNA[tp,]
   uncertaintyFunc2(cars.temp)
 })
 
@@ -89,8 +89,11 @@ scale.uncertaintylist <- lapply(tempScale, function(tp){
 cars.scale.uncertainty.dataframe <- as.data.frame(do.call(rbind, scale.uncertaintylist))
 
 #正态检验
-shapiro.test(cars.scale.uncertainty.dataframe$cylinders)
-qqnorm(cars.scale.uncertainty.dataframe$cylinders)
+shapiro.test(cars.scale.uncertainty.dataframe$year)
+SWTest <- shapiro.test(cars.scale.uncertainty.dataframe$year)
+SWTest$statistic
+SWTest$p.value
+qqnorm(cars.scale.uncertainty.dataframe$economy)
 qqline(cars.scale.uncertainty.dataframe$cylinders)
 hist(cars.scale.uncertainty.dataframe$cylinders)
 #相关分析
