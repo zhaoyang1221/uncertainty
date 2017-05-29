@@ -43,7 +43,7 @@ uncertaintyFunc2 <- function(data){
   })
 }
 
-#按值抽样 结果最差
+#按值抽样 
 tempScale <- NULL
 tempScale[[1]] <- rownames(sil.scale)
 tempScale[[2]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 1))
@@ -70,7 +70,6 @@ tempScale[[21]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 2 & sil.sc
 tempScale[[22]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 2 & sil.scale[,3] <= 0.1))
 
 #更改抽样方法,每14行一组
-tempScale <- NULL
 tempScale1 <- NULL
 tempScale1[[1]] <- rownames(sil.scale)
 tempScale1[[2]] <- rownames(subset.matrix(sil.scale, sil.scale[,1] == 1))
@@ -97,8 +96,10 @@ scale.uncertaintylist <- lapply(tempScale, function(tp){
 cars.scale.uncertainty.dataframe <- as.data.frame(do.call(rbind, scale.uncertaintylist))
 
 #正态检验
-shapiro.test(cars.scale.uncertainty.dataframe$economy)
-qqnorm(cars.scale.uncertainty.dataframe$economy)
+SWtest <- apply(cars.scale.uncertainty.dataframe, 2, shapiro.test)
+
+shapiro.test(cars.scale.uncertainty.dataframe$power)
+qqnorm(cars.scale.uncertainty.dataframe$economy, col = "blue", main = "")
 qqline(cars.scale.uncertainty.dataframe$cylinders)
 hist(cars.scale.uncertainty.dataframe$displacement)
 
@@ -118,15 +119,14 @@ flattenCorrMatrix <- function(cormat, pmat) {
 corrMatrix <- flattenCorrMatrix(corelationResult$r,corelationResult$P)
 ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 
-plot()
 library(corrplot)
-corrplot(corelationResult$r, method = "circle", type = "upper", order = "original",
+corrplot(corelationResult$r, method = "circle", type = "upper", order = "FPC",
          p.mat = corelationResult$P, sig.level = 0.05, insig = "blank")
 
 #原数据的相关分析
 corrResultOfOriginalDATA <- rcorr(as.matrix(cars.noNA))
 corrMatrixOfOriginalDATA <- flattenCorrMatrix(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
-corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "original",
+corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "FPC",
          p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
 #因果分析
 library("pcalg")
