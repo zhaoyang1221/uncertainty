@@ -100,6 +100,7 @@ SWtest <- apply(cars.scale.uncertainty.dataframe, 2, shapiro.test)
 
 shapiro.test(cars.scale.uncertainty.dataframe$power)
 qqnorm(cars.scale.uncertainty.dataframe$economy, col = "blue", main = "")
+
 qqline(cars.scale.uncertainty.dataframe$cylinders)
 hist(cars.scale.uncertainty.dataframe$displacement)
 
