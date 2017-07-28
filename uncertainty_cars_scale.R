@@ -24,10 +24,14 @@ ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "cyan
 #聚类
 cars.scale.pamk <- pamk(cars.scale)
 cars.scale.pam <- pam(cars.scale, cars.scale.pamk$nc)
-autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm")
-clusplot(cars.scale.pam)
+cars.scale.pamk.plot <- autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm")
+
+
+
+clusplot(cars.scale.pamk$pamobject)
 sil.scale <- silhouette(cars.scale.pamk$pamobject)
 plot(sil.scale)
+
 
 #计算每一维度上的不确定性(以标准差来衡量)
 uncertaintyFunc1 <- function(data){
@@ -129,6 +133,8 @@ corrResultOfOriginalDATA <- rcorr(as.matrix(cars.noNA))
 corrMatrixOfOriginalDATA <- flattenCorrMatrix(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
 corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "FPC",
          p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
+
+
 #因果分析
 library("pcalg")
 stopifnot(require(Rgraphviz))# needed for all our graph plots
