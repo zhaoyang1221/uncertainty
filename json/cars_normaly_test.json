@@ -1,0 +1,44 @@
+[
+  {
+    "Attr": "economy",
+    "statistic": 0.9291,
+    "p.value": 0.1176,
+    "method": "Shapiro-Wilk normality test"
+  },
+  {
+    "Attr": "cylinders",
+    "statistic": 0.715,
+    "p.value": 0,
+    "method": "Shapiro-Wilk normality test"
+  },
+  {
+    "Attr": "displacement",
+    "statistic": 0.9372,
+    "p.value": 0.1729,
+    "method": "Shapiro-Wilk normality test"
+  },
+  {
+    "Attr": "power",
+    "statistic": 0.9529,
+    "p.value": 0.3601,
+    "method": "Shapiro-Wilk normality test"
+  },
+  {
+    "Attr": "weight",
+    "statistic": 0.6993,
+    "p.value": 0,
+    "method": "Shapiro-Wilk normality test"
+  },
+  {
+    "Attr": "timeTo60mph",
+    "statistic": 0.946,
+    "p.value": 0.2631,
+    "method": "Shapiro-Wilk normality test"
+  },
+  {
+    "Attr": "year",
+    "statistic": 0.955,
+    "p.value": 0.3961,
+    "method": "Shapiro-Wilk normality test"
+  }
+]
