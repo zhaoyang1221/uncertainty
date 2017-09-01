@@ -27,6 +27,7 @@ SWtestlist <- rbindlist(SWtest,fill= TRUE)
  
 SWtest.dataframe <- data.frame(Attr = names(SWtest) ,SWtestlist)
 SWtest.dataframe <- subset(SWtest.dataframe, select = -data.name)
+
 SWtest.dataframe.json <- toJSON(SWtest.dataframe, pretty = T)
 writeLines(SWtest.dataframe.json, "json/cars_normaly_test.json")
 
