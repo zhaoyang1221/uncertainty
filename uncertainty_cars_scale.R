@@ -4,8 +4,12 @@ cars.noNA <-na.omit(cars)
 
 library(fpc)
 library(cluster)
+library(factoextra)
 library(ggfortify)
 library(ggplot2)
+windowsFonts(myFont = windowsFont("方正书宋简体"))
+windowsFonts(Times = windowsFont("Times New Roman"))
+
 #数据归一化
 cars.scale <- scale(cars.noNA, center = TRUE, scale = TRUE)
 cars.scale.diss <- daisy(cars.scale)
@@ -19,18 +23,20 @@ rst <- sapply(K, function(i){
   sumryOfresult <- summary(result)
   sumryOfresult$avg.width
 })
-ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "cyan", colour = "black") + geom_line() + ylab("Silhouette")
+ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "black", colour = "black") + geom_line() + ylab("Silhouette")  + theme(axis.title.x = element_text(size = 18),axis.text.x = element_text(size = 15),axis.text.y = element_text(size = 15), axis.title.y = element_text(size = 18))
 
 #聚类
 cars.scale.pamk <- pamk(cars.scale)
 cars.scale.pam <- pam(cars.scale, cars.scale.pamk$nc)
-cars.scale.pamk.plot <- autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm")
+ autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12),legend.position='none')
 
 
 
 clusplot(cars.scale.pamk$pamobject)
 sil.scale <- silhouette(cars.scale.pamk$pamobject)
-plot(sil.scale)
+
+fviz_silhouette(sil.scale, label = F) +ylab("轮廓系数") + ggtitle("轮廓系数分布图\n  平均轮廓系数:0.47") + theme(plot.title=element_text(family = "myFont",size=25),axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12),legend.position='none')
+plot(sil.scale,main = "Silhouette plot")
 
 
 #计算每一维度上的不确定性(以标准差来衡量)
@@ -112,8 +118,9 @@ hist(cars.scale.uncertainty.dataframe$displacement)
 #相关分析
 library("Hmisc")
 corelationResult <- rcorr(as.matrix(cars.scale.uncertainty.dataframe))
+
 #数据重组
-flattenCorrMatrix <- function(cormat, pmat) {
+flattenCorrMatrixWithUpper <- function(cormat, pmat) {
   ut <- upper.tri(cormat)
   data.frame(
     row = rownames(cormat)[row(cormat)[ut]],
@@ -122,16 +129,26 @@ flattenCorrMatrix <- function(cormat, pmat) {
     p = pmat[ut]
   )
 }
-corrMatrix <- flattenCorrMatrix(corelationResult$r,corelationResult$P)
+flattenCorrMatrixWithAll <- function(cormat, pmat) {
+  ut <- xor(upper.tri(cormat, diag = T), lower.tri(cormat))
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    r  =(cormat)[ut],
+    p = pmat[ut]
+  )
+}
+corrMatrix <- flattenCorrMatrixWithAll(corelationResult$r,corelationResult$P)
 ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 
+
 library(corrplot)
-corrplot(corelationResult$r, method = "circle", type = "upper", order = "FPC",
+cars_corrplot <- corrplot(corelationResult$r, method = "circle", type = "upper", order = "FPC",
          p.mat = corelationResult$P, sig.level = 0.05, insig = "blank")
 
 #原数据的相关分析
 corrResultOfOriginalDATA <- rcorr(as.matrix(cars.noNA))
-corrMatrixOfOriginalDATA <- flattenCorrMatrix(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
+corrMatrixOfOriginalDATA <- flattenCorrMatrixWithAll(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
 corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "FPC",
          p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
 

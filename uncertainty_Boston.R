@@ -115,7 +115,8 @@ flattenCorrMatrix <- function(cormat, pmat) {
     p = pmat[ut]
   )
 }
-corrMatrix <- flattenCorrMatrix(Boston.corelationResult$r,Boston.corelationResult$P)
+Boston.corrMatrix <- flattenCorrMatrixWithAll(Boston.corelationResult$r,Boston.corelationResult$P)
+
 ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 
 library(corrplot)
@@ -123,17 +124,23 @@ par(mfrow=c(1,2))
 corrplot(Boston.corelationResult$r, method = "circle", type = "upper", order = "FPC",
          p.mat = Boston.corelationResult$P, sig.level = 0.05, insig = "blank")
 
+
+
 #原数据的相关分析
-corrResultOfOriginalDATA <- rcorr(as.matrix(Boston))
-corrMatrixOfOriginalDATA <- flattenCorrMatrix(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
+Boston.corrResultOfOriginalDATA <- rcorr(as.matrix(Boston))
+Boston.corrMatrixOfOriginalDATA <- flattenCorrMatrixWithAll(Boston.corrResultOfOriginalDATA$r, Boston.corrResultOfOriginalDATA$P)
 corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "AOE",
          p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
 
-rMatrix <- corrResultOfOriginalDATA$r
-rtemp <- apply(rMatrix, 2, sum)
-rtemp.sorted <- sort(rtemp, decreasing = T)
-orderNames <- names(rtemp.sorted)
-Boston.sorted <- Boston[orderNames]
+sortedFunc <- function(corrResultOfOriginalDATA, data) {
+  rMatrix <- corrResultOfOriginalDATA$r
+  rtemp <- apply(rMatrix, 2, sum)
+  rtemp.sorted <- sort(rtemp, decreasing = T)
+  orderNames <- names(rtemp.sorted)
+  data.sorted <- data[orderNames]
+}
+
+Boston.sorted <- sortedFunc(Boston.corrResultOfOriginalDATA, Boston)
 
 sorted.corrResultOfOriginalDATA <- rcorr(as.matrix(Boston.sorted))
 sorted.corrMatrixOfOriginalDATA <- flattenCorrMatrix(sorted.corrResultOfOriginalDATA$r, sorted.corrResultOfOriginalDATA$P)

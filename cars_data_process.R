@@ -13,3 +13,12 @@ writeLines(toJSON(cars.noNA.summary, pretty = T), "json/cars_summary.json")
 
 #打印原数据和不确定性数据
 writeLines(toJSON(cars.noNA, pretty = T), "json/cars.json")
+
+#打印不确定性数据的相关关系数据
+writeLines(toJSON(corrMatrix, pretty = T, na = "null"), "json/cars_uncertainty_correlation.json")
+
+#打印原数据的相关关系
+writeLines(toJSON(corrMatrixOfOriginalDATA, pretty = T, na = "null"), "json/cars_original_correlation.json")
+
+#打印原始数据和不确定性数据的结合数据
+writeLines(toJSON(list(original = cars.noNA, uncertainty = cars.scale.uncertainty.dataframe), pretty = T), "json/cars_original_with_uncertainty.json")
