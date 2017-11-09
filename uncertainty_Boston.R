@@ -12,10 +12,14 @@ Boston.scale <- scale(Boston, center = TRUE, scale = TRUE)
 Boston.diss <- daisy(Boston)
 Boston.pamk <- pamk(Boston.scale)
 Boston.pam <- pam(Boston.diss, Boston.pamk$nc, diss=TRUE)
-windows()
-autoplot(Boston.pamk$pamobject, frame = TRUE, frame.type = "norm")
+
+autoplot(Boston.pamk$pamobject, frame = TRUE, frame.type = "norm")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12),legend.position='none')
 clusplot(Boston.pam)
+
+library(factoextra)
 sil <- silhouette(Boston.pamk$pamobject)
+fviz_silhouette(sil, label = F) +ylab("轮廓系数") + ggtitle("轮廓系数分布图\n  平均轮廓系数:0.34") + theme(plot.title=element_text(family = "myFont",size=25),axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12),legend.position='none')
+
 
 plot(sil)
 
@@ -99,7 +103,9 @@ Boston.uncertainty.dataframe <- as.data.frame(do.call(rbind, Boston.uncertaintyl
 Boston.SWtest <- apply(Boston.uncertainty.dataframe, 2, shapiro.test)
 Boston.SWtest
 shapiro.test(Boston.uncertainty.dataframe$dis)
+par(mfrow=c(1,1))
 qqnorm(Boston.uncertainty.dataframe$crim, col = "blue", main = "")
+ggplot(Boston.uncertainty.dataframe, aes(sample=crim))+stat_qq()+xlab("理论分位数")+ylab("样本分位数")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12))
 qqnorm(Boston.uncertainty.dataframe$rm, col = "blue", main = "")
 
 #相关分析
@@ -122,7 +128,7 @@ ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 library(corrplot)
 par(mfrow=c(1,2))
 corrplot(Boston.corelationResult$r, method = "circle", type = "upper", order = "FPC",
-         p.mat = Boston.corelationResult$P, sig.level = 0.05, insig = "blank")
+         p.mat = Boston.corelationResult$P, sig.level = 0.05, insig = "blank",tl.cex = 1.4)
 
 
 
@@ -145,4 +151,4 @@ Boston.sorted <- sortedFunc(Boston.corrResultOfOriginalDATA, Boston)
 sorted.corrResultOfOriginalDATA <- rcorr(as.matrix(Boston.sorted))
 sorted.corrMatrixOfOriginalDATA <- flattenCorrMatrix(sorted.corrResultOfOriginalDATA$r, sorted.corrResultOfOriginalDATA$P)
 corrplot(sorted.corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "original",
-         p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
+         p.mat = sorted.corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank",tl.cex = 1.4)

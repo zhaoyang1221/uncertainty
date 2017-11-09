@@ -23,7 +23,7 @@ rst <- sapply(K, function(i){
   sumryOfresult <- summary(result)
   sumryOfresult$avg.width
 })
-ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "black", colour = "black") + geom_line() + ylab("Silhouette")  + theme(axis.title.x = element_text(size = 18),axis.text.x = element_text(size = 15),axis.text.y = element_text(size = 15), axis.title.y = element_text(size = 18))
+ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "black", colour = "black") + geom_line() + ylab("轮廓系数")  + theme(axis.title.x = element_text(family = "Times",size=25, face="italic"),axis.text.x = element_text(size = 15),axis.text.y = element_text(size = 15), axis.title.y = element_text(family = "myFont",size=25))
 
 #聚类
 cars.scale.pamk <- pamk(cars.scale)
@@ -110,7 +110,8 @@ SWtest <- apply(cars.scale.uncertainty.dataframe, 2, shapiro.test)
 
 shapiro.test(cars.scale.uncertainty.dataframe$power)
 
-qqnormchart <- qqnorm(cars.scale.uncertainty.dataframe$economy, col = "blue", main = "") 
+qqnorm(cars.scale.uncertainty.dataframe$economy, main = "", xlab = "理论分位数",ylab="样本分位数") 
+ggplot(cars.scale.uncertainty.dataframe, aes(sample=economy))+stat_qq()+xlab("理论分位数")+ylab("样本分位数")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12))
 
 qqline(cars.scale.uncertainty.dataframe$cylinders)
 hist(cars.scale.uncertainty.dataframe$displacement)
@@ -143,6 +144,7 @@ ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 
 
 library(corrplot)
+par(mfrow=c(1,2))
 cars_corrplot <- corrplot(corelationResult$r, method = "circle", type = "upper", order = "FPC",
          p.mat = corelationResult$P, sig.level = 0.05, insig = "blank")
 
