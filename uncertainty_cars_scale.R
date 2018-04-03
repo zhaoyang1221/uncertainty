@@ -23,19 +23,27 @@ rst <- sapply(K, function(i){
   sumryOfresult <- summary(result)
   sumryOfresult$avg.width
 })
-ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "black", colour = "black") + geom_line() + ylab("轮廓系数")  + theme(axis.title.x = element_text(family = "Times",size=25, face="italic"),axis.text.x = element_text(size = 15),axis.text.y = element_text(size = 15), axis.title.y = element_text(family = "myFont",size=25))
+ggplot(NULL, aes(x= K, y = rst)) + geom_point(shape = 21, size = 4, fill = "black", colour = "black") + geom_line() + ylab("轮廓系数")  + theme(axis.title.x = element_text(family = "Times",size=25, face="italic")
+            ,axis.text.x = element_text(family = "Times",size = 18)
+            ,axis.text.y = element_text(family = "Times", size = 18)
+            , axis.title.y = element_text(family = "myFont",size=18))
 
 #聚类
+library(fpc)
+library(factoextra)
+library(ggfortify)
+library(ggplot2)
 cars.scale.pamk <- pamk(cars.scale)
 cars.scale.pam <- pam(cars.scale, cars.scale.pamk$nc)
- autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12),legend.position='none')
+autoplot(cars.scale.pamk$pamobject, frame = TRUE, frame.type = "norm") + theme(axis.title = element_text(family = "myFont",size=18)
+                 ,axis.text=element_text(family = "Times",size = 18),legend.position='none')
 
 
 
 clusplot(cars.scale.pamk$pamobject)
 sil.scale <- silhouette(cars.scale.pamk$pamobject)
 
-fviz_silhouette(sil.scale, label = F) +ylab("轮廓系数") + ggtitle("轮廓系数分布图\n  平均轮廓系数:0.47") + theme(plot.title=element_text(family = "myFont",size=25),axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12),legend.position='none')
+fviz_silhouette(sil.scale, label = F) +ylab("轮廓系数") + ggtitle("轮廓系数分布图\n  平均轮廓系数:0.47") + theme(plot.title=element_text(family = "myFont",size=18),axis.title = element_text(family = "myFont",size=18),axis.text=element_text(family = "Times",size = 18),legend.position='none')
 plot(sil.scale,main = "Silhouette plot")
 
 
@@ -98,8 +106,8 @@ tempScale3 <- split(matrixOfOrdered, 1:nrow(matrixOfOrdered))
 
 #计算不确定性
 scale.uncertaintylist <- lapply(tempScale, function(tp){
-  cars.temp <- cars.noNA[tp,]
-  uncertaintyFunc2(cars.temp)
+cars.temp <- cars.noNA[tp,]
+uncertaintyFunc2(cars.temp)
 })
 
 #将不确定性的list转成dataframe，便于作图
@@ -108,10 +116,10 @@ cars.scale.uncertainty.dataframe <- as.data.frame(do.call(rbind, scale.uncertain
 #正态检验
 SWtest <- apply(cars.scale.uncertainty.dataframe, 2, shapiro.test)
 
-shapiro.test(cars.scale.uncertainty.dataframe$power)
+shapiro.test(cars.scale.uncertainty.dataframe$economy)
 
 qqnorm(cars.scale.uncertainty.dataframe$economy, main = "", xlab = "理论分位数",ylab="样本分位数") 
-ggplot(cars.scale.uncertainty.dataframe, aes(sample=economy))+stat_qq()+xlab("理论分位数")+ylab("样本分位数")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12))
+ggplot(cars.scale.uncertainty.dataframe, aes(sample=economy))+stat_qq()+xlab("理论分位数")+ylab("样本分位数")+theme(axis.title = element_text(family = "myFont",size=18),axis.text=element_text(family = "myFont",size=18))
 
 qqline(cars.scale.uncertainty.dataframe$cylinders)
 hist(cars.scale.uncertainty.dataframe$displacement)
@@ -145,15 +153,26 @@ ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 
 library(corrplot)
 par(mfrow=c(1,2))
-cars_corrplot <- corrplot(corelationResult$r, method = "circle", type = "upper", order = "FPC",
+cars_corrplot <- corrplot(corelationResult$r, method = "circle", type = "upper", order = "FPC", tl.cex = 2.5,cl.cex = 2.5,
          p.mat = corelationResult$P, sig.level = 0.05, insig = "blank")
 
 #原数据的相关分析
+library("Hmisc")
+library("corrplot")
 corrResultOfOriginalDATA <- rcorr(as.matrix(cars.noNA))
 corrMatrixOfOriginalDATA <- flattenCorrMatrixWithAll(corrResultOfOriginalDATA$r, corrResultOfOriginalDATA$P)
-corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "FPC",
+corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "FPC",tl.cex = 2.5,cl.cex = 2.5,cl.offset = 0,
          p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
 
+flattenCorrMatrixWithAll <- function(cormat, pmat) {
+  ut <- xor(upper.tri(cormat, diag = T), lower.tri(cormat))
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    r  =(cormat)[ut],
+    p = pmat[ut]
+  )
+}
 
 #因果分析
 library("pcalg")
