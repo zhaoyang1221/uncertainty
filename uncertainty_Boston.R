@@ -13,7 +13,9 @@ Boston.diss <- daisy(Boston)
 Boston.pamk <- pamk(Boston.scale)
 Boston.pam <- pam(Boston.diss, Boston.pamk$nc, diss=TRUE)
 
+
 autoplot(Boston.pamk$pamobject, frame = TRUE, frame.type = "norm")+theme(axis.title = element_text(family = "Times",size=18),axis.text.x = element_text(size = 18,margin=unit(c(0.2,0.2,0.1,0.1), "cm")),axis.text.y = element_text(size = 18,margin=unit(c(0.2,0.2,0.2,0.1), "cm")),legend.position='none',axis.ticks.length=unit(-0.1, "cm"))
+
 clusplot(Boston.pam)
 
 library(factoextra)
@@ -105,7 +107,7 @@ Boston.SWtest
 shapiro.test(Boston.uncertainty.dataframe$dis)
 par(mfrow=c(1,1))
 qqnorm(Boston.uncertainty.dataframe$crim, col = "blue", main = "")
-ggplot(Boston.uncertainty.dataframe, aes(sample=crim))+stat_qq()+xlab("理论分位数")+ylab("样本分位数")+theme(axis.title = element_text(family = "myFont",size=25),axis.text=element_text(size = 12))
+ggplot(Boston.uncertainty.dataframe, aes(sample=crim))+stat_qq()+xlab("理论分位数")+ylab("样本分位数")+theme(axis.title = element_text(family = "myFont",size=18),axis.text=element_text(size = 18))
 qqnorm(Boston.uncertainty.dataframe$rm, col = "blue", main = "")
 
 #相关分析
@@ -128,15 +130,15 @@ ggplot(corrMatrix) + geom_point(aes(x = r, y = p))
 library(corrplot)
 par(mfrow=c(1,2))
 corrplot(Boston.corelationResult$r, method = "circle", type = "upper", order = "FPC",
-         p.mat = Boston.corelationResult$P, sig.level = 0.05, insig = "blank",tl.cex = 1.4)
+         p.mat = Boston.corelationResult$P, sig.level = 0.05, insig = "blank", tl.cex = 2.5,cl.cex = 2.5)
 
 
 
 #原数据的相关分析
 Boston.corrResultOfOriginalDATA <- rcorr(as.matrix(Boston))
 Boston.corrMatrixOfOriginalDATA <- flattenCorrMatrixWithAll(Boston.corrResultOfOriginalDATA$r, Boston.corrResultOfOriginalDATA$P)
-corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "AOE",
-         p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
+#corrplot(corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "AOE",
+#         p.mat = corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank")
 
 sortedFunc <- function(corrResultOfOriginalDATA, data) {
   rMatrix <- corrResultOfOriginalDATA$r
@@ -151,4 +153,4 @@ Boston.sorted <- sortedFunc(Boston.corrResultOfOriginalDATA, Boston)
 sorted.corrResultOfOriginalDATA <- rcorr(as.matrix(Boston.sorted))
 sorted.corrMatrixOfOriginalDATA <- flattenCorrMatrix(sorted.corrResultOfOriginalDATA$r, sorted.corrResultOfOriginalDATA$P)
 corrplot(sorted.corrResultOfOriginalDATA$r, method = "circle", type = "upper", order = "original",
-         p.mat = sorted.corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank",tl.cex = 1.4)
+         p.mat = sorted.corrResultOfOriginalDATA$P, sig.level = 0.05, insig = "blank",tl.cex = 2.5,cl.cex = 2.5)
