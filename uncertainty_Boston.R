@@ -14,7 +14,7 @@ Boston.pamk <- pamk(Boston.scale)
 Boston.pam <- pam(Boston.diss, Boston.pamk$nc, diss=TRUE)
 
 
-autoplot(Boston.pamk$pamobject, frame = TRUE, frame.type = "norm")+theme(axis.title = element_text(family = "Times",size=18),axis.text.x = element_text(size = 18,margin=unit(c(0.2,0.2,0.1,0.1), "cm")),axis.text.y = element_text(size = 18,margin=unit(c(0.2,0.2,0.2,0.1), "cm")),legend.position='none',axis.ticks.length=unit(-0.1, "cm"))
+autoplot(Boston.pamk$pamobject, frame = TRUE, frame.type = "norm")+theme(axis.title = element_text(family = "Times",size=18),axis.text.x = element_text(family = "Times",size = 18,margin=unit(c(0.2,0.2,0.1,0.1), "cm")),axis.text.y = element_text(family = "Times",size = 18,margin=unit(c(0.2,0.2,0.2,0.1), "cm")),legend.position='none',axis.ticks.length=unit(-0.1, "cm"))
 
 clusplot(Boston.pam)
 
